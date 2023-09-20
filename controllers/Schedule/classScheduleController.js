@@ -27,6 +27,24 @@ const classScheduleController = {
         }
     }),
 
+    getOne: asyncHandler(async(req, res) => {
+        try {
+            const timeSchedule = await TimeSchedule.findById(req.params.id);
+            if (!timeSchedule) {
+                _throw({
+                    code: 404,
+                    message: 'Course not found'
+                });
+            }
+            res.status(200).json(timeSchedule);
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
+    }),
+
     getAll: asyncHandler(async (req, res) => {
         try {
             const timeSchedules = await TimeSchedule.find({});
@@ -41,5 +59,88 @@ const classScheduleController = {
                 message: error.message
             })
         }
+    }),
+
+    activate: asyncHandler(async(req, res) => {
+        try {
+            const schedule = await TimeSchedule.findById(req.params.id);
+            if(!schedule){
+                _throw({
+                    code: 404,
+                    message: "Schedule not found"
+                })
+            }
+            if(schedule?.activated === true){
+                _throw({
+                    code: 400,
+                    message: "Schedule has already activated"
+                })
+            }
+            schedule.activated = true;
+            await schedule.save();
+            res.status(200).json({
+                status: true,
+                message: "Schedule is activated",
+                schedule
+            })
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
+    }),
+
+    deactivate: asyncHandler(async(req, res) => {
+        try {
+            const schedule = await TimeSchedule.findById(req.params.id);
+            if(!schedule){
+                _throw({
+                    code: 404,
+                    message: "Schedule not found"
+                })
+            }
+            if(schedule?.activated === false){
+                _throw({
+                    code: 400,
+                    message: "Schedule has already deactivated"
+                })
+            }
+            schedule.activated = false;
+            await schedule.save();
+            res.status(200).json({
+                status: true,
+                message: "Schedule is deactivated",
+                schedule
+            })
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
+    }),
+
+    update: asyncHandler(async(req, res) => {
+        try {
+            const schedule = await TimeSchedule.find(req.params.id);
+            if(!schedule){
+                _throw({
+                    code: 404,
+                    message: "Schedule not found"
+                })
+            }
+            Object.assign(schedule, req.body);
+            await schedule.save();
+            res.status(200).json(schedule);
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
     })
+    
 }
+
+export default classScheduleController

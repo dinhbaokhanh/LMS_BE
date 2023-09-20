@@ -19,7 +19,8 @@ const courseLevelSchema = new mongoose.Schema({
     },
     courseId: {
         type: Schema.Types.ObjectId,
-        ref: "Course"
+        ref: "Course",
+        required: true
     },
 })
 

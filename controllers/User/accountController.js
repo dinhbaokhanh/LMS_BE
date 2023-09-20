@@ -4,8 +4,10 @@ import crypto from "crypto";
 import _throw from "../../utils/_throw.js";
 import { generateToken } from "../../config/jwToken.js"
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import validateId from "../../config/validateId.js";
 import emailController from "./Auth/EmailController.js";
+import e from "express";
 
 const saltRounds = 10;
 async function hashPassword(password) {
@@ -42,10 +44,15 @@ const accountController = {
         const { email, password } = req.body;
         const findUser = await Account.findOne({ email: email });
         if (findUser && (findUser.isPasswordMatched(password))) {
+            const accessToken = generateToken(findUser._id);
+            const refreshToken = jwt.sign({ _id: findUser._id },
+                process.env.REFRESH_TOKEN,
+                { expiresIn: '1m' });
             res.status(200).json({
                 status: true,
                 message: "Log In Successfully",
-                token: generateToken(findUser?._id),
+                accessToken,
+                refreshToken,
                 role: findUser?.role,
             })
         } else {
@@ -56,7 +63,59 @@ const accountController = {
         }
     }),
 
-    getUser: asyncHandler(async(req, res) => {
+    logOut: asyncHandler(async (req, res) => {
+        const { email } = req.body;
+        const user = await Account.findOne({ email: email });
+
+        if (!user) {
+            _throw({ code: 404, message: "User not found" });
+        } else {
+            await Account.findOneAndUpdate(
+                { email: email },
+                { token: '' }
+            );
+            res.status(200).json({ message: "Log Out Successfully" });
+        }
+    }),
+
+    refreshToken: asyncHandler(async (req, res) => {
+        const authHeader = req.headers.authorization || req.headers.Authorization;
+        if (!authHeader) {
+            throw { code: 401, message: 'Authorization header not found' };
+        }
+
+        if (authHeader.startsWith('Bearer ')) {
+            const refreshToken = authHeader.split('')[1];
+            let payload;
+            try {
+                payload = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
+            } catch (err) {
+                throw { code: 403, message: "Invalid refresh token" };
+            }
+
+            const user = await Account.findOne({ _id: payload.userId });
+            if (!user) {
+                throw { code: 400, message: "User not found" };
+            }
+
+            if (user.refreshToken !== refreshToken) {
+                throw { code: 403, message: "Invalid refresh token" };
+            }
+
+            const newAccessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN, { expiresIn: '1d' });
+            user.accessToken = newAccessToken;
+            await user.save();
+
+            res.status(200).json({
+                accessToken: newAccessToken,
+                message: "Access token refreshed successfully"
+            });
+        } else {
+            throw { code: 403, message: "Invalid token" };
+        }
+    }),
+
+    getUser: asyncHandler(async (req, res) => {
         const { id } = req.params;
         try {
             const getProfile = await Account.findById(id);
@@ -142,10 +201,10 @@ const accountController = {
         }
     }),
 
-    forgotPasswordToken: asyncHandler(async(req, res) => {
+    forgotPasswordToken: asyncHandler(async (req, res) => {
         const { email } = req.body;
         const user = await Account.findOne({ email: email });
-        if(!user){
+        if (!user) {
             _throw({
                 message: "User is not existed"
             })
@@ -169,7 +228,7 @@ const accountController = {
         }
     }),
 
-    resetPassword: asyncHandler(async(req, res) => {
+    resetPassword: asyncHandler(async (req, res) => {
         const { password } = req.body;
         const { token } = req.params;
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
@@ -177,7 +236,7 @@ const accountController = {
             passwordResetToken: hashedToken,
             passwordResetExpires: { $gt: Date.now() },
         })
-        if(!user){
+        if (!user) {
             _throw({
                 message: "Token expired"
             })
@@ -190,7 +249,9 @@ const accountController = {
             status: true,
             message: "Password Reset"
         })
-    })
+    }),
+
+
 }
 
 export default accountController;

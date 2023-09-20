@@ -9,6 +9,12 @@ const courseLevelController = {
         const findLevel = await CourseLevel.findOne({ levelCode: levelCode });
         const file = req.file;
         let syllabus;
+        if(!courseId){
+            return _throw({
+                code: 400,
+                message: "Course ID is required"
+            })
+        }
         if (!findLevel) {
             if (file) {
                 {
