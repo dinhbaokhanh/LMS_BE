@@ -5,6 +5,7 @@ import preTeacherRouter from "./Pre-Teacher/preTeacherRoutes.js";
 import teacherRouter from "./Teacher/teacherRouter.js";
 import courseRouter from "./Course/courseRouter.js";
 import locationRouter from "./Location/locationRouter.js"
+import classScheduleRouter from "./Schedule/classScheduleRoutes.js"
 
 const routerPath = [
     {path: '/account', route: accountRouter},
@@ -13,7 +14,8 @@ const routerPath = [
     {path: '/course', route: courseRouter},
     {path: '/preTeacher', route: preTeacherRouter},
     {path: '/teacher', route: teacherRouter},
-    {path: '/location', route: locationRouter}
+    {path: '/location', route: locationRouter},
+    {path: '/class/schedule', route: classScheduleRouter}
 ]
 
 export default routerPath;

@@ -139,8 +139,29 @@ const classScheduleController = {
                 message: error.message
             })
         }
-    })
+    }),
     
+    delete: asyncHandler(async(req, res) => {
+        try {
+            const schedule = await TimeSchedule.findByIdAndDelete(req.params.id);
+            if(!schedule){
+                return res.status(404).json({
+                    status: true,
+                    message: "Schedule not found"
+                })
+            }
+            res.status(200).json({
+                status: true,
+                message: "Schedule deleted successfully",
+                schedule
+            })
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
+    })
 }
 
 export default classScheduleController

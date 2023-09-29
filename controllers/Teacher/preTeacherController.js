@@ -124,7 +124,8 @@ const preTeacherController = {
                     gender: preTeacher.gender,
                     dob: preTeacher.dob,
                     role: preTeacher.role,
-                    facebookLink: preTeacher.facebookLink
+                    facebookLink: preTeacher.facebookLink,
+                    createdAt: new Date()
                 });
                 await teacher.save();
             } else {

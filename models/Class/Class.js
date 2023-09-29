@@ -8,7 +8,7 @@ const ClassSchema = new mongoose.Schema({
         end: Date,
     },
     courseId: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Course"
     },
     status: {
@@ -16,15 +16,15 @@ const ClassSchema = new mongoose.Schema({
         enum: ["RUNNING", "PREOPEN", "DROP"]
     },
     courseLevelId: {
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'CourseLevel'
     },
     timeSchedule: [{
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'TimeSchedule'
     }],
     bookTeacherId: [{
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'BookTeacher'
     }]
 })

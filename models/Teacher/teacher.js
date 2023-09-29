@@ -86,13 +86,15 @@ const teacherSchema = new mongoose.Schema({
     },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: 'Schedule'
     },
     classRegister: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ClassRegister'
     },
-    timestamp: { type: Date, default: Date.now }
+    timestamp: { type: Date, default: Date.now },
+    createdAt: Date,
 })
 
 const Teacher = mongoose.model('Teachers', teacherSchema);
