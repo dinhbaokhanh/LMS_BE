@@ -1,31 +1,33 @@
 import mongoose from "mongoose";
 
 const ClassSchema = new mongoose.Schema({
-    id: String,
-    codeClass: String,
-    dayRange: {
-        start: Date,
-        end: Date,
+    codeClass: {
+        type: String,
+        required: true
     },
     courseId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Course"
+        ref: "Course",
+        required: true
     },
     status: {
         type: String,
-        enum: ["RUNNING", "PREOPEN", "DROP"]
+        enum: ["RUNNING", "PREOPEN", "DROP"],
+        required: true
     },
     courseLevelId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'CourseLevel'
+        ref: 'CourseLevel',
+        required: true
     },
     timeSchedule: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'TimeSchedule'
+        ref: 'TimeSchedule',
+        required: true
     }],
     bookTeacherId: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'BookTeacher'
+        ref: 'BookTeacher',
     }]
 })
 

@@ -14,3 +14,4 @@ router
     .put("/activate/:id", authMiddleware, isTE, classScheduleController.activate)
     .put("/deactivate/:id", authMiddleware, isTE, classScheduleController.deactivate)
     
+export default router;

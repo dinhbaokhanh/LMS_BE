@@ -12,7 +12,9 @@ const courseController = {
                     message: 'Course already exists'
                 });
             }
-            const course = new Course(req.body);
+            const course = await Course.create({
+                courseName: req.body.courseName,
+            });
             await course.save();
             res.status(201).json({
                 status: true,

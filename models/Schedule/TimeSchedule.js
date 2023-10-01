@@ -1,10 +1,19 @@
 import mongoose from "mongoose";
 
 const timeScheduleSchema = new mongoose.Schema({
-    start: Date,
-    end: Date,
-    weekday: String,
-    activated: Boolean
+    start: {
+        type: String,
+        required: true
+    },
+    end: {
+        type: String,
+        required: true
+    },
+    weekday: {
+        type: String,
+        required: true
+    },
+    activated: Boolean,
 });
 
 const TimeSchedule = mongoose.model('TimeSchedule', timeScheduleSchema);

@@ -2,15 +2,27 @@ import mongoose from "mongoose";
 
 const classSessionSchema = new mongoose.Schema({
     sessionNumber: Number,
-    date: Date,
-    document: Object,
+    date: {
+        type: Date,
+        required: true
+    },
+    sessionDays: [{
+        index: Number,
+        date: Date,
+    }],
+    document: {
+        type: String,
+        required: true
+    },
     classId: {
         type: Schema.Types.ObjectId, 
-        ref: 'Class'
+        ref: 'Class',
+        required: true
     },
     locationId: {
         type: Schema.Types.ObjectId, 
-        ref: 'Location'
+        ref: 'Location',
+        required: true
     },
     teacherInSession: [{
         teacherId: {

@@ -4,15 +4,20 @@ import asyncHandler from "express-async-handler";
 
 const classScheduleController = {
     register: asyncHandler(async (req, res) => {
+        const { start, end, weekday } = req.body
         try {
-            const existed = await TimeSchedule.findOne({ start: req.body.start, end: req.body.end, weekday: req.body.weekday });
+            const existed = await TimeSchedule.findOne({ start: start, end: end, weekday: weekday });
             if (existed) {
                 return _throw({
                     code: 400,
                     message: "Schedule has already existed"
                 })
             }
-            const timeSchedule = new TimeSchedule(req.body);
+            const timeSchedule = await TimeSchedule.create({
+                start: start, 
+                end: end, 
+                weekday: weekday
+            });
             await timeSchedule.save();
             res.status(200).json({
                 status: true,

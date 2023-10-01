@@ -4,21 +4,14 @@ import asyncHandler from "express-async-handler";
 
 const classController = {
     register: asyncHandler(async (req, res) => {
-        const { codeClass, courseId, courseLevelId, status, timeSchedule } = req.body;
-        if (!codeClass) _throw({ message: 'Missing codeClass field', code: 400 });
-        if (!dayRange) _throw({ message: 'Missing dayRange field', code: 400 });
-        if (!courseId) _throw({ message: 'Missing courseId field', code: 400 });
-        if (!status) _throw({ message: 'Missing status field', code: 400 });
-        if (!courseLevelId) _throw({ message: 'Missing courseLevelId field', code: 400 });
-        if (!timeSchedule || timeSchedule.length === 0) _throw({ message: 'Missing or empty timeSchedule field', code: 400 });
+        const { codeClass, courseId, courseLevelId, timeSchedule } = req.body;
         const existingClass = await Class.findOne({ codeClass });
         if (existingClass) {
             return res.status(400).json({ message: 'Class with this codeClass already exists' });
         }
         try {
-            const newClass = new Class({
+            const newClass = await Class.create({
                 codeClass,
-                dayRange,
                 courseId,
                 status: "PREOPEN",
                 courseLevelId,
@@ -76,7 +69,7 @@ const classController = {
 
     update: asyncHandler(async (req, res) => {
         const { id } = req.params;
-        const { codeClass, courseId, courseLevelId, status, timeSchedule, dayRange, bookTeacherId } = req.body;
+        const { codeClass, courseId, courseLevelId, status, timeSchedule, bookTeacherId } = req.body;
         try {
             const classDetail = await Class.findById(id);
             if (!classDetail) {

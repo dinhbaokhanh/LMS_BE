@@ -12,7 +12,13 @@ const locationController = {
                     message: "Location code has been registered"
                 })
             }
-            const location = new Location(req.body);
+            const location = await Location.create({
+                locationCode: req.body.locationCode,
+                locationName: req.body.locationName,
+                locationDetail: req.body.locationDetail,
+                hotline: req.body.hotline,
+                city: req.body.city,
+            });
             await location.save();
             res.status(201).json({
                 status: true,
