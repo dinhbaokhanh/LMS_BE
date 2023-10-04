@@ -6,7 +6,7 @@ const router = express.Router();
 
 router
     .post("/register", authMiddleware, isTE, classScheduleController.register)
-    .get("/getOne/:id", authMiddleware, isTE, classScheduleController.getOne)
+    .get("/:id", authMiddleware, isTE, classScheduleController.getOne)
     .get("/getAll", authMiddleware, isTE, classScheduleController.getAll)
     .put("/update/:id", authMiddleware, isTE, classScheduleController.update)
 
