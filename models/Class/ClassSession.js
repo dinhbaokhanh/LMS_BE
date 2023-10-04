@@ -15,18 +15,18 @@ const classSessionSchema = new mongoose.Schema({
         required: true
     },
     classId: {
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'Class',
         required: true
     },
     locationId: {
-        type: Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId, 
         ref: 'Location',
         required: true
     },
     teacherInSession: [{
         teacherId: {
-            type: Schema.Types.ObjectId, 
+            type: mongoose.Schema.Types.ObjectId, 
             ref: 'Teacher'
         },
         role: String,

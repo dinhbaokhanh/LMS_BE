@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 
 const classSessionController = {
     register: asyncHandler(async (req, res) => {
-        const { date, classId, locationId, teacherInSession } = req.body;
+        const { date, classId, locationId, teacherInSession, timeSchedule } = req.body;
         try {
             const existed = await ClassSession.findOne({
                 date: date,
@@ -14,19 +14,7 @@ const classSessionController = {
                 code: 400,
                 message: "Session has already existed"
             })
-            let sessionDays = [];
-            let sessionDate = new Date(date);
-            let endDate = new Date(sessionDate);
-            endDate.setDate(endDate.getDate() + 7 * 15);
-            let startDayStr = sessionDate.toISOString().split('T')[0];
-            let endDateStr = endDate.toISOString().split('T')[0];
-            for (let i = 0; i < 16; i++) {
-                sessionDays.push({
-                    index: i + 1,
-                    date: new Date(sessionDate)
-                });
-                sessionDate.setDate(sessionDate.getDate() + 7);
-            }
+            
             const classSession = await ClassSession.create({
                 sessionNumber: 16,
                 date: date,
