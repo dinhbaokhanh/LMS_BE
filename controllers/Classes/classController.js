@@ -4,7 +4,7 @@ import asyncHandler from "express-async-handler";
 
 const classController = {
     register: asyncHandler(async (req, res) => {
-        const { codeClass, courseId, courseLevelId, timeSchedule } = req.body;
+        const { codeClass, courseId, courseLevelId, classSchedule } = req.body;
         const existingClass = await Class.findOne({ codeClass });
         if (existingClass) {
             return res.status(400).json({ message: 'Class with this codeClass already exists' });
@@ -15,8 +15,7 @@ const classController = {
                 courseId,
                 status: "PREOPEN",
                 courseLevelId,
-                timeSchedule,
-                bookTeacherId,
+                classSchedule,
             });
             const savedClass = await newClass.save();
             res.status(201).json({
@@ -46,19 +45,38 @@ const classController = {
         }
     }),
 
-    getOne: asyncHandler(async (req, res) => {
-        const { id } = req.params;
+    getAllByTeacher: asyncHandler(async(req, res) => {
+        const { teacher } = req.params;
+        if(!teacher) return _throw({
+            code: 400,
+            message: "Teacher not found"
+        })
         try {
-            const classDetail = await Class.findById(id);
+            const classes = await Class.find({bookTeacherId: teacher})
+            if(!classes){
+                _throw({
+                    code: 404,
+                    message: "Teacher has no class"
+                })
+            }
+            res.status(200).json({
+                message: "Get class successfully",
+                classes
+            })
+        } catch (error) {
+            
+        }
+    }),
+
+    getOne: asyncHandler(async (req, res) => {
+        try {
+            const classDetail = await Class.findById(req.params.id);
             if (!classDetail) {
                 return res.status(404).json({
                     message: 'Class not found',
                 });
             }
-            res.status(200).json({
-                message: 'Class detail fetched successfully',
-                classDetail
-            });
+            res.status(200).json(classDetail);
         } catch (error) {
             _throw({
                 code: 400,
@@ -69,7 +87,7 @@ const classController = {
 
     update: asyncHandler(async (req, res) => {
         const { id } = req.params;
-        const { codeClass, courseId, courseLevelId, status, timeSchedule, bookTeacherId } = req.body;
+        const { codeClass, courseId, courseLevelId, status, classSchedule, bookTeacherId } = req.body;
         try {
             const classDetail = await Class.findById(id);
             if (!classDetail) {
@@ -82,15 +100,8 @@ const classController = {
             classDetail.courseId = courseId || classDetail.courseId;
             classDetail.courseLevelId = courseLevelId || classDetail.courseLevelId;
             classDetail.status = status || classDetail.status;
-            classDetail.timeSchedule = timeSchedule || classDetail.timeSchedule;
+            classDetail.classSchedule = classSchedule || classDetail.classSchedule;
             classDetail.bookTeacherId = bookTeacherId || classDetail.bookTeacherId;
-    
-            if (status === 'RUNNING' && classDetail.status !== 'RUNNING') {
-                // Automatically create teacher's work schedule and 16 default classes based on the start date and weekly schedule
-                // Prevent teachers from registering for this class
-            } else if (status === 'DROP') {
-                // Prevent teachers from registering for this class
-            }
     
             const updatedClass = await classDetail.save();
             res.status(200).json({
@@ -105,7 +116,14 @@ const classController = {
         }
     }),
     
-
+    delete: asyncHandler(async(req, res) => {
+        const { id } = req.params;
+        const findClass = await Class.findByIdAndDelete(id);
+        res.status(200).json({
+            message: "Deleted successfully",
+            findClass
+        })
+    })
 }
 
 export default classController;

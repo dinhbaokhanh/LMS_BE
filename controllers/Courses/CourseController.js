@@ -29,6 +29,7 @@ const courseController = {
     }),
 
     getOne: asyncHandler(async (req, res) => {
+        
         try {
             const course = await Course.findById(req.params.id);
             if (!course) {
