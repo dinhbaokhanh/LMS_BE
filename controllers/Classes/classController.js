@@ -45,28 +45,28 @@ const classController = {
         }
     }),
 
-    getAllByTeacher: asyncHandler(async(req, res) => {
-        const { teacher } = req.params;
-        if(!teacher) return _throw({
-            code: 400,
-            message: "Teacher not found"
-        })
-        try {
-            const classes = await Class.find({bookTeacherId: teacher})
-            if(!classes){
-                _throw({
-                    code: 404,
-                    message: "Teacher has no class"
-                })
-            }
-            res.status(200).json({
-                message: "Get class successfully",
-                classes
-            })
-        } catch (error) {
+    // getAllByTeacher: asyncHandler(async(req, res) => {
+    //     const { teacher } = req.params;
+    //     if(!teacher) return _throw({
+    //         code: 400,
+    //         message: "Teacher not found"
+    //     })
+    //     try {
+    //         const classes = await Class.find({bookTeacherId: teacher})
+    //         if(!classes){
+    //             _throw({
+    //                 code: 404,
+    //                 message: "Teacher has no class"
+    //             })
+    //         }
+    //         res.status(200).json({
+    //             message: "Get class successfully",
+    //             classes
+    //         })
+    //     } catch (error) {
             
-        }
-    }),
+    //     }
+    // }),
 
     getOne: asyncHandler(async (req, res) => {
         try {
