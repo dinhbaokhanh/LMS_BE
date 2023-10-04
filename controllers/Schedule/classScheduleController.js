@@ -16,7 +16,8 @@ const classScheduleController = {
             const timeSchedule = await TimeSchedule.create({
                 start: start, 
                 end: end, 
-                weekday: weekday
+                weekday: weekday,
+                activated: false
             });
             await timeSchedule.save();
             res.status(200).json({
