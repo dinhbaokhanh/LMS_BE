@@ -22,7 +22,6 @@ const teacherScheduleController = {
     
                 await newSchedule.save();
             }
-    
             return res.status(200).json({ message: 'Schedule created successfully' });
         } catch (error) {
             _throw({
