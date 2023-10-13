@@ -2,12 +2,14 @@ import mongoose, { Schema } from "mongoose";
 
 const bookTeacherSchema = new mongoose.Schema({
     classId: {
-        tyoe: Schema.Types.ObjectId,
-        ref: "Class"
+        type: Schema.Types.ObjectId,
+        ref: "Class",
+        required: true
     },
     locationId: {
         type: Schema.Types.ObjectId,
-        ref: "Location"
+        ref: "Location",
+        required: true
     },
     teacherRegister: [{
         teacherId: {

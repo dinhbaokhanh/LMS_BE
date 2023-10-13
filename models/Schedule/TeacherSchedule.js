@@ -2,12 +2,13 @@ import mongoose from "mongoose";
 
 const teacherScheduleSchema = new mongoose.Schema({
     teacherId: {
-        type: Schema.Types.ObjectId,
-        ref: "Teacher"
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Teacher",
+        required: true,
     },
     classSessionId:{
-        type : Schema.Types.ObjectId , 
-        ref : "ClassSession"
+        type : mongoose.Schema.Types.ObjectId , 
+        ref : "ClassSession",
     }
 });
 
