@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken";
 import validateId from "../../config/validateId.js";
 import emailController from "./Auth/EmailController.js";
 import e from "express";
+import { error } from "console";
 
 const saltRounds = 10;
 async function hashPassword(password) {
@@ -48,6 +49,11 @@ const accountController = {
             const refreshToken = jwt.sign({ _id: findUser._id },
                 process.env.REFRESH_TOKEN,
                 { expiresIn: '1m' });
+
+            findUser.accessToken = accessToken;
+            findUser.refreshToken = refreshToken;
+            await findUser.save();
+
             res.status(200).json({
                 status: true,
                 message: "Log In Successfully",
@@ -81,25 +87,26 @@ const accountController = {
     refreshToken: asyncHandler(async (req, res) => {
         const authHeader = req.headers.authorization || req.headers.Authorization;
         if (!authHeader) {
-            throw { code: 401, message: 'Authorization header not found' };
+            throw ({ code: 401, message: 'Authorization header not found' });
         }
 
         if (authHeader.startsWith('Bearer ')) {
-            const refreshToken = authHeader.split('')[1];
-            let payload;
-            try {
-                payload = await jwt.verify(refreshToken, process.env.REFRESH_TOKEN);
-            } catch (err) {
-                throw { code: 403, message: "Invalid refresh token" };
-            }
+            const refreshToken = authHeader.split(' ')[1];
+            await jwt.verify(refreshToken, process.env.REFRESH_TOKEN, async err => {
+                err &&
+                    _throw({
+                        code: 403,
+                        message: 'Refresh token invalid',
+                    });
+            });
 
-            const user = await Account.findOne({ _id: payload.userId });
+            const user = await Account.findOne({ refreshToken });
             if (!user) {
-                throw { code: 400, message: "User not found" };
+                throw { code: 404, message: "User not found" };
             }
 
             if (user.refreshToken !== refreshToken) {
-                throw { code: 403, message: "Invalid refresh token" };
+                throw { code: 403, message: "Invalid refresh token from user" };
             }
 
             const newAccessToken = jwt.sign({ userId: user._id }, process.env.ACCESS_TOKEN, { expiresIn: '1d' });
@@ -111,7 +118,7 @@ const accountController = {
                 message: "Access token refreshed successfully"
             });
         } else {
-            throw { code: 403, message: "Invalid token" };
+            throw { code: 403, message: "Invalid auth token" };
         }
     }),
 

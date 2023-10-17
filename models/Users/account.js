@@ -50,6 +50,14 @@ const accountSchema = new mongoose.Schema({
         enum: ['TEACHER', 'TE', 'CXO']
     },
 
+    accessToken: {
+        type: String,
+    },
+
+    refreshToken: {
+        type: String,
+    },
+
     createdAt: {
         type: Date,
         default: Date.now,
