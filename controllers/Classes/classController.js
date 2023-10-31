@@ -87,7 +87,7 @@ const classController = {
 
     update: asyncHandler(async (req, res) => {
         const { id } = req.params;
-        const { codeClass, courseId, courseLevelId, status, classSchedule, bookTeacherId } = req.body;
+        const { codeClass, courseId, courseLevelId, status, timeSchedule, bookTeacherId } = req.body;
         try {
             const classDetail = await Class.findById(id);
             if (!classDetail) {
@@ -100,7 +100,7 @@ const classController = {
             classDetail.courseId = courseId || classDetail.courseId;
             classDetail.courseLevelId = courseLevelId || classDetail.courseLevelId;
             classDetail.status = status || classDetail.status;
-            classDetail.classSchedule = classSchedule || classDetail.classSchedule;
+            classDetail.timeSchedule = timeSchedule || classDetail.timeSchedule;
             classDetail.bookTeacherId = bookTeacherId || classDetail.bookTeacherId;
     
             const updatedClass = await classDetail.save();

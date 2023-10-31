@@ -121,6 +121,9 @@ const preTeacherController = {
                     email: preTeacher.email,
                     fullName: preTeacher.fullName,
                     phoneNumber: preTeacher.phoneNumber,
+                    identify: preTeacher.identify,
+                    licenseDate: preTeacher.licenseDate,
+                    licensePlace: preTeacher.licensePlace,
                     gender: preTeacher.gender,
                     dob: preTeacher.dob,
                     role: preTeacher.role,
@@ -128,6 +131,7 @@ const preTeacherController = {
                     createdAt: new Date()
                 });
                 await teacher.save();
+                await PreTeacher.findByIdAndDelete(id);
             } else {
                 return res.status(404).json({
                     status: false,

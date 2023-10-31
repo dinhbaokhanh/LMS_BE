@@ -4,10 +4,12 @@ import courseLevelRouter from "./Course/courseLevelRoutes.js";
 import preTeacherRouter from "./Pre-Teacher/preTeacherRoutes.js";
 import teacherRouter from "./Teacher/teacherRouter.js";
 import courseRouter from "./Course/courseRouter.js";
-import locationRouter from "./Location/locationRouter.js"
-import classScheduleRouter from "./Schedule/classScheduleRoutes.js"
-import classRouter from "./Class/ClassRouter.js"
-import classSessionRouter from "./Class/ClassSessionRouter.js"
+import locationRouter from "./Location/locationRouter.js";
+import classScheduleRouter from "./Schedule/classScheduleRoutes.js";
+import classRouter from "./Class/ClassRouter.js";
+import classSessionRouter from "./Class/ClassSessionRouter.js";
+import bookTeacherRouter from "./Class/bookTeacherRouter.js";
+import teacherScheduleRouter from "./Schedule/teacherScheduleRouter.js"
 
 const routerPath = [
     {path: '/account', route: accountRouter},
@@ -19,7 +21,9 @@ const routerPath = [
     {path: '/location', route: locationRouter},
     {path: '/class/schedule', route: classScheduleRouter},
     {path: '/class', route: classRouter},
-    {path: '/class/sessions', route: classSessionRouter}
+    {path: '/class/sessions', route: classSessionRouter},
+    {path: '/class/teacher', route: bookTeacherRouter},
+    {path: '/teacher/schedule', route: teacherScheduleRouter}
 ]
 
 export default routerPath;

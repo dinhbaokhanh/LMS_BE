@@ -14,15 +14,15 @@ const teacherScheduleController = {
                     message: "This teacher doesn't have any class"
                 });
             }
+            let allSessionDays = [];
             for (let session of classSessions) {
-                const newSchedule = new TeacherSchedule({
-                    teacherId: teacherId,
-                    classSessionId: session._id
-                });
-    
-                await newSchedule.save();
+                let sessionDates = session.sessionDays.map(day => day.date);
+                allSessionDays.push(...sessionDates);
             }
-            return res.status(200).json({ message: 'Schedule created successfully' });
+            return res.status(200).json({ 
+                message: 'Schedule created successfully',
+                sessionDays: allSessionDays
+            });
         } catch (error) {
             _throw({
                 code: 400,
@@ -32,4 +32,4 @@ const teacherScheduleController = {
     })
 }
 
-export default teacherScheduleController
+export default teacherScheduleController;

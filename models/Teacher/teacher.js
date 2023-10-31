@@ -86,7 +86,6 @@ const teacherSchema = new mongoose.Schema({
     },
     schedule: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
         ref: 'Schedule'
     },
     classRegister: {

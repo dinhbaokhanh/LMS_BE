@@ -56,7 +56,7 @@ const classScheduleController = {
             const timeSchedules = await TimeSchedule.find({});
             res.status(200).json({
                 status: true,
-                message: "Get all successfully",
+                message: "Get All successfully",
                 timeSchedules
             })
         } catch (error) {
