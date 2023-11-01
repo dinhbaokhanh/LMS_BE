@@ -97,6 +97,22 @@ const classSessionController = {
                 message: error.message
             })
         }
+    }),
+
+    delete: asyncHandler(async(req, res) => {
+        const { classId } = req.params;
+        const classSessions = await ClassSession.findOneAndDelete({ classId });
+        try {
+            res.status(200).json({
+                message: "Class Sessions Deleted",
+                classSessions,
+            });
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
     })
 }
 

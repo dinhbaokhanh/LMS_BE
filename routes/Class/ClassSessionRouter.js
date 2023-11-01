@@ -5,7 +5,8 @@ const router = express.Router();
 
 router
     .post("/register", authMiddleware, isTE, classSessionController.register)
-    .get("/:classId/classSession", authMiddleware, classSessionController.getOne)
+    .get("/:classId", authMiddleware, classSessionController.getOne)
     .get("/getAll", authMiddleware, classSessionController.getAll)
+    .delete("/:classId/delete", authMiddleware, isTE, classSessionController.delete)
     
 export default router;
