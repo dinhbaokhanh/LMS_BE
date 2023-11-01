@@ -6,12 +6,18 @@ const classSessionSchema = new mongoose.Schema({
         type: Date,
         required: true
     },
+    range: String,
     sessionDays: [{
         index: Number,
         date: Date,
     }],
     document: {
         type: String,
+        required: true
+    },
+    time: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'TimeSchedule',
         required: true
     },
     classId: {
