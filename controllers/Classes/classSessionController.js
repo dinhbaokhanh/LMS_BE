@@ -5,7 +5,7 @@ import asyncHandler from "express-async-handler";
 
 const classSessionController = {
     register: asyncHandler(async (req, res) => {
-        const { date, timeScheduleId, classId, locationId, teacherInSession, document } = req.body;
+        const { date, time, classId, locationId, teacherInSession, document } = req.body;
         try {
             const existed = await ClassSession.findOne({
                 date: date,
@@ -36,7 +36,7 @@ const classSessionController = {
                 date: date,
                 document: document,
                 sessionDays: sessionDays,
-                timeSchedule: timeScheduleId,
+                time: time,
                 range: startDateStr + ' - ' + endDateStr,
                 classId: classId,
                 locationId: locationId,

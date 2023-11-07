@@ -1,5 +1,4 @@
 import ClassSession from "../../models/Class/ClassSession.js"
-import TimeSchedule from "../../models/Schedule/TimeSchedule.js";
 import asyncHadler from "express-async-handler";
 import _throw from "../../utils/_throw.js";
 
@@ -16,14 +15,16 @@ const teacherScheduleController = {
             }
             let allSessionDays = [];
             for (let session of classSessions) {
-                const timeSchedule = await TimeSchedule.find({ _id: session.time });
-                console.log(timeSchedule);
                 let sessionDates = session.sessionDays.map(day => ({
                     date: day.date,
-                    // start: timeSchedule.start,
-                    // end: timeSchedule.end
+                    start: session.time.start,
+                    end: session.time.end
                 }));
                 allSessionDays.push(...sessionDates);
+                // sort dates
+                allSessionDays.sort(function(a,b){
+                    return new Date(a.date) - new Date(b.date);
+                });
             }
             return res.status(200).json({ 
                 message: 'Schedule created successfully',

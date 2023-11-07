@@ -93,7 +93,7 @@ const bookTeacherController = {
     }),
 
     rejectRegistration: asyncHandler(async (req, res) => {
-        const { classId, teacherId } = req.body;
+        const { classId, teacherId } = req.params;
         const bookTeacher = await BookTeacher.findOne({ classId });
         if (!bookTeacher) {
             return res.status(404).json({ message: 'Class not found' });
