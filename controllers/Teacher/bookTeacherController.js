@@ -77,12 +77,15 @@ const bookTeacherController = {
         });
         await teacherSchedule.save();
 
-        await classSession.teacherInSession.push({
-            teacherId: teacherId,
-            role: 'NONE',
-            active: true,
-            isReplaceTeacher: false
-        });
+        for (var i = 0; i < 16; i++) {
+            classSession.sessionDays[i].teacherInSession.push({
+                teacherId: teacherId,
+                role: 'None',
+                active: false,
+                isReplaceTeacher: false
+            })
+        }
+
         await classSession.save();
 
         await bookTeacher.save();
@@ -112,6 +115,36 @@ const bookTeacherController = {
             bookTeacher
         });
     }),
+
+    roleRegistration: asyncHandler(async (req, res) => {
+        const { classId } = req.params;
+        const { teacherId, role } = req.body;
+        const bookTeacher = await BookTeacher.findOne({ classId });
+        const classSession = await ClassSession.findOne({ classId: classId });
+        if (!classSession) {
+            return res.status(404).json({ message: 'Class not found' });
+        }
+        const registration = bookTeacher.teacherRegister.find(reg => reg.teacherId.toString() === teacherId);
+        if (!registration) {
+            return res.status(404).json({ message: 'Teacher not found' });
+        }
+
+        for (let i = 0; i < classSession.sessionDays.length; i++) {
+            for (let j = 0; j < classSession.sessionDays[i].teacherInSession.length; j++){
+                if (classSession.sessionDays[i].teacherInSession[j].teacherId == teacherId) {
+                    classSession.sessionDays[i].teacherInSession[j].role = role;
+                }
+            }
+        }
+
+        await classSession.save();
+
+        await bookTeacher.save();
+        res.status(200).json({
+            message: 'Registration accepted successfully',
+            classSession
+        });
+    })
 }
 
 export default bookTeacherController

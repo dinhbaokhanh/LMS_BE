@@ -9,5 +9,6 @@ router
     .get('/registration/:classId/getAll', authMiddleware, isTE, bookTeacherController.getAllRegistration)
     .put('/:classId/accept/:teacherId', authMiddleware, isTE, bookTeacherController.acceptRegistration)
     .put('/:classId/reject/:teacherId', authMiddleware, isTE, bookTeacherController.rejectRegistration)
+    .put('/:classId/role', authMiddleware, isTE, bookTeacherController.roleRegistration)
 
 export default router;

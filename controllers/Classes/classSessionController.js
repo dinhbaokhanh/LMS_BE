@@ -8,7 +8,6 @@ const classSessionController = {
         const { date, time, classId, locationId, teacherInSession, document } = req.body;
         try {
             const existed = await ClassSession.findOne({
-                date: date,
                 classId: classId
             });
             if (existed) return _throw({
@@ -28,7 +27,11 @@ const classSessionController = {
             for (var i = 0; i < 16; i++) {
                 var sessionDate = new Date(startDate);
                 sessionDate.setDate(sessionDate.getDate() + i * 7);
-                sessionDays.push({ index: i+1, date: new Date(sessionDate) });
+                sessionDays.push({
+                    index: i + 1,
+                    date: new Date(sessionDate),
+                    teacherInSession
+                });
             }
 
             const classSession = await ClassSession.create({
@@ -40,10 +43,9 @@ const classSessionController = {
                 range: startDateStr + ' - ' + endDateStr,
                 classId: classId,
                 locationId: locationId,
-                teacherInSession: teacherInSession
             })
             await classSession.save();
-            if(classSession){
+            if (classSession) {
                 const bookTeacher = await BookTeacher.create({
                     classId,
                     locationId,
@@ -84,8 +86,8 @@ const classSessionController = {
         }
     }),
 
-    getAll: asyncHandler(async(req, res) => {
-        const classSessions = await ClassSession.find();
+    getAll: asyncHandler(async (req, res) => {
+        const classSessions = await ClassSession.find({});
         try {
             res.status(200).json({
                 message: "All Class Sessions",
@@ -99,13 +101,47 @@ const classSessionController = {
         }
     }),
 
-    delete: asyncHandler(async(req, res) => {
+    delete: asyncHandler(async (req, res) => {
         const { classId } = req.params;
         const classSessions = await ClassSession.findOneAndDelete({ classId });
         try {
             res.status(200).json({
                 message: "Class Sessions Deleted",
                 classSessions,
+            });
+        } catch (error) {
+            _throw({
+                code: 400,
+                message: error.message
+            })
+        }
+    }),
+
+    checkAttendance: asyncHandler(async (req, res) => {
+        const { classId } = req.params;
+        const classSession = await ClassSession.find({ classId: classId })
+        console.log(classSession[0]);
+        if (!classSession) {
+            return res.status(404).json({
+                message: "Class session not found",
+                classSession,
+            })
+        }
+        try {
+            const { index, teacherId } = req.body;
+            for (var i = 0; i < 16; i++) {
+                if (classSession[0].sessionDays[i].index == index) {
+                    for (var j = 0; j < classSession[0].sessionDays[i].teacherInSession.length; j++) {
+                        if (classSession[0].sessionDays[i].teacherInSession[j].teacherId == teacherId
+                            && classSession[0].sessionDays[i].teacherInSession[j].isReplaceTeacher === false) {
+                            classSession[0].sessionDays[i].teacherInSession[j].active = true;        
+                        }
+                    }
+                }
+            }
+            res.status(200).json({
+                message: "Checked Attendance",
+                classSession,
             });
         } catch (error) {
             _throw({

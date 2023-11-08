@@ -8,5 +8,6 @@ router
     .get("/:classId", authMiddleware, classSessionController.getOne)
     .get("/getAll", authMiddleware, classSessionController.getAll)
     .delete("/:classId/delete", authMiddleware, isTE, classSessionController.delete)
+    .put("/:classId/checkAttendance", authMiddleware, classSessionController.checkAttendance)
     
 export default router;
