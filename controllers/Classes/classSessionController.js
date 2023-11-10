@@ -120,7 +120,6 @@ const classSessionController = {
     checkAttendance: asyncHandler(async (req, res) => {
         const { classId } = req.params;
         const classSession = await ClassSession.find({ classId: classId })
-        console.log(classSession[0]);
         if (!classSession) {
             return res.status(404).json({
                 message: "Class session not found",
@@ -129,16 +128,16 @@ const classSessionController = {
         }
         try {
             const { index, teacherId } = req.body;
-            for (var i = 0; i < 16; i++) {
-                if (classSession[0].sessionDays[i].index == index) {
-                    for (var j = 0; j < classSession[0].sessionDays[i].teacherInSession.length; j++) {
-                        if (classSession[0].sessionDays[i].teacherInSession[j].teacherId == teacherId
-                            && classSession[0].sessionDays[i].teacherInSession[j].isReplaceTeacher === false) {
-                            classSession[0].sessionDays[i].teacherInSession[j].active = true;        
+            for (let day of classSession[0].sessionDays) {
+                if (day.index == index) {
+                    for (let teacher of day.teacherInSession) {
+                        if (teacher.teacherId == teacherId && !teacher.isReplaceTeacher) {
+                            teacher.active = true;
                         }
                     }
                 }
             }
+            await classSession[0].save();
             res.status(200).json({
                 message: "Checked Attendance",
                 classSession,
