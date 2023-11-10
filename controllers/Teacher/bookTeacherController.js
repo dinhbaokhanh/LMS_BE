@@ -1,5 +1,6 @@
 import BookTeacher from "../../models/Class/bookTeacher.js";
 import ClassSession from "../../models/Class/ClassSession.js";
+import Class from "../../models/Class/Class.js";
 import TeacherSchedule from "../../models/Schedule/TeacherSchedule.js";
 import Teacher from "../../models/Teacher/teacher.js"
 import _throw from "../../utils/_throw.js";
@@ -79,6 +80,13 @@ const bookTeacherController = {
             classSessionId: classSession._id,
         });
         await teacherSchedule.save();
+
+        const openClass = await Class.findByIdAndUpdate(classId,
+            {
+                status: "RUNNING"
+            }                
+        )
+        await openClass.save()
 
         for (var i = 0; i < 16; i++) {
             classSession.sessionDays[i].teacherInSession.push({

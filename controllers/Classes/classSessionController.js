@@ -10,6 +10,7 @@ const classSessionController = {
             const existed = await ClassSession.findOne({
                 classId: classId
             });
+
             if (existed) return _throw({
                 code: 400,
                 message: "Session has already existed"

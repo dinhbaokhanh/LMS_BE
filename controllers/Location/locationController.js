@@ -32,10 +32,10 @@ const locationController = {
         }
     }),
 
-    getOne: asyncHandler(async(req, res) => {
+    getOne: asyncHandler(async (req, res) => {
         try {
             const location = await Location.findById(req.params.id);
-            if(!location){
+            if (!location) {
                 return _throw({
                     code: 404,
                     message: "Location not found"
@@ -70,7 +70,15 @@ const locationController = {
 
     update: asyncHandler(async (req, res) => {
         try {
-            const location = await Location.findByIdAndUpdate(req.params.id);
+            const location = await Location.findByIdAndUpdate(req.params.id,
+                {
+                    locationCode: req.body.locationCode,
+                    locationName: req.body.locationName,
+                    locationDetail: req.body.locationDetail,
+                    hotline: req.body.hotline,
+                    city: req.body.city,
+                }
+            );
             if (!location) {
                 _throw({
                     code: 404,

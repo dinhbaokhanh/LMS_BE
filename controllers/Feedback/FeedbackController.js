@@ -5,7 +5,7 @@ import _throw from "../../utils/_throw.js";
 const FeedbackController = {
     register: asyncHandler(async (req, res) => {
         try {
-            const { name, phoneNumber, courseLevel, classCode, group, mentor,
+            const { name, phoneNumber, classCode, group, mentor,
                 specializationPoint, attitudePoint, comment } = req.body;
             const existingFeedbacks = await Feedback.find({ classCode: classCode, name: name });
             const phase = existingFeedbacks.length % 2 + 1;
@@ -13,7 +13,6 @@ const FeedbackController = {
                 phase,
                 name,
                 phoneNumber,
-                courseLevel,
                 classCode,
                 group,
                 mentor,
