@@ -1,23 +1,26 @@
 import BookTeacher from "../../models/Class/bookTeacher.js";
 import ClassSession from "../../models/Class/ClassSession.js";
 import TeacherSchedule from "../../models/Schedule/TeacherSchedule.js";
+import Teacher from "../../models/Teacher/teacher.js"
 import _throw from "../../utils/_throw.js";
 import asyncHandler from "express-async-handler";
 
 const bookTeacherController = {
 
     registerForClass: asyncHandler(async (req, res) => {
-        const { teacherId, classId } = req.body;
+        const { teacherEmail, classId } = req.body;
+        const teacher = await Teacher.find({ email: teacherEmail });
+        const teacherId = teacher[0]._id;
         const bookTeacher = await BookTeacher.findOne({ classId });
         if (!bookTeacher) {
             return res.status(404).json({ message: 'Class not found' });
         }
         try {
-            const existingRegistration = bookTeacher.teacherRegister.find(reg => reg.teacherId.toString() === teacherId);
+            const existingRegistration = bookTeacher.teacherRegister.find(reg => reg.teacherId.toString() === teacherId.toString());
             if (existingRegistration) {
                 return res.status(400).json({ message: 'This teacher has already registered for this class' });
             }
-            bookTeacher.teacherRegister.push({ teacherId, status: 'WAITING' });
+            bookTeacher.teacherRegister.push({ teacherId: teacherId, status: 'WAITING' });
             await bookTeacher.save();
             res.status(201).json({
                 message: 'Registered for class successfully',

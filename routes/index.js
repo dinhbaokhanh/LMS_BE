@@ -9,7 +9,8 @@ import classScheduleRouter from "./Schedule/classScheduleRoutes.js";
 import classRouter from "./Class/ClassRouter.js";
 import classSessionRouter from "./Class/ClassSessionRouter.js";
 import bookTeacherRouter from "./Class/bookTeacherRouter.js";
-import teacherScheduleRouter from "./Schedule/teacherScheduleRouter.js"
+import teacherScheduleRouter from "./Schedule/teacherScheduleRouter.js";
+import feedbackRouter from "./Feedback/feedbackRouter.js"
 
 const routerPath = [
     {path: '/account', route: accountRouter},
@@ -23,7 +24,8 @@ const routerPath = [
     {path: '/class', route: classRouter},
     {path: '/class/sessions', route: classSessionRouter},
     {path: '/class/teacher', route: bookTeacherRouter},
-    {path: '/teacher/schedule', route: teacherScheduleRouter}
+    {path: '/teacher/schedule', route: teacherScheduleRouter},
+    {path: '/feedback', route: feedbackRouter}
 ]
 
 export default routerPath;

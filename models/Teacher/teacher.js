@@ -1,4 +1,4 @@
-import mongoose, {Schema} from "mongoose";
+import mongoose from "mongoose";
 import validator from "validator";
 
 const teacherSchema = new mongoose.Schema({
