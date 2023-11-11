@@ -13,7 +13,7 @@ const FeedbackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    courseLevel: {
+    course: {
         type: String,
         required: true,
     },
