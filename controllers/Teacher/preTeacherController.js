@@ -2,6 +2,7 @@ import PreTeacher from "../../models/Users/preTeacher.js"
 import Account from "../../models/Users/account.js";
 import Teacher from "../../models/Teacher/teacher.js";
 import asyncHandler from "express-async-handler";
+import deletePreTeachers from "../../config/autoDeletePreteacher.js";
 import _throw from "../../utils/_throw.js";
 import bcrypt from "bcrypt";
 
@@ -11,6 +12,8 @@ async function hashPassword(password) {
     const hash = await bcrypt.hash(password, salt);
     return { salt, hash };
 }
+
+deletePreTeachers();
 
 const preTeacherController = {
     register: asyncHandler(async (req, res) => {
@@ -131,7 +134,6 @@ const preTeacherController = {
                     createdAt: new Date()
                 });
                 await teacher.save();
-                await PreTeacher.findByIdAndDelete(id);
             } else {
                 return res.status(404).json({
                     status: false,
